@@ -14,6 +14,7 @@ export interface InitialQualification {
   updatedAt: string;
   questions: string[];
   answers: string[];
+  userId: string;
 }
 
 export interface GetInitialQualificationsRequest {
@@ -37,6 +38,7 @@ export interface CreateInitialQualificationRequest {
   type: string;
   status: string;
   questions: string[];
+  userId: string;
 }
 
 export interface CreateInitialQualificationResponse {
