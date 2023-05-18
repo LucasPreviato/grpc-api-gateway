@@ -58,6 +58,14 @@ export interface GetProvidersResponse {
   providers: Provider[];
 }
 
+export interface GetProviderRequest {
+  id: string;
+}
+
+export interface GetProviderResponse {
+  provider: Provider | undefined;
+}
+
 export interface CreateProviderRequest {
   name: string;
   providerCategoryId: string;
@@ -112,17 +120,29 @@ export const PROVIDERS_PACKAGE_NAME = "providers";
 
 export interface ProviderServiceClient {
   createProvider(request: CreateProviderRequest): Observable<CreateProviderResponse>;
+
+  findAll(request: GetProvidersRequest): Observable<GetProvidersResponse>;
+
+  findOne(request: GetProviderRequest): Observable<GetProviderResponse>;
 }
 
 export interface ProviderServiceController {
   createProvider(
     request: CreateProviderRequest,
   ): Promise<CreateProviderResponse> | Observable<CreateProviderResponse> | CreateProviderResponse;
+
+  findAll(
+    request: GetProvidersRequest,
+  ): Promise<GetProvidersResponse> | Observable<GetProvidersResponse> | GetProvidersResponse;
+
+  findOne(
+    request: GetProviderRequest,
+  ): Promise<GetProviderResponse> | Observable<GetProviderResponse> | GetProviderResponse;
 }
 
 export function ProviderServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createProvider"];
+    const grpcMethods: string[] = ["createProvider", "findAll", "findOne"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("ProviderService", method)(constructor.prototype[method], method, descriptor);
