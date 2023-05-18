@@ -7,7 +7,12 @@ import { AvaliationsModule } from './avaliations/avaliations.module';
 import { InitialQualificationsModule } from './initial-qualifications/initial-qualifications.module';
 
 @Module({
-  imports: [AuthModule, ProvidersModule, AvaliationsModule, InitialQualificationsModule],
+  imports: [
+    AuthModule,
+    ProvidersModule,
+    AvaliationsModule,
+    InitialQualificationsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
