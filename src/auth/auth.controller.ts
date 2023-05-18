@@ -37,5 +37,7 @@ export class AuthController implements OnModuleInit {
   @Put('login')
   private async login(
     @Body() body: LoginRequest,
-  ): Promise<Observable<LoginResponse>> {}
+  ): Promise<Observable<LoginResponse>> {
+    return this.svc.login(body);
+  }
 }
