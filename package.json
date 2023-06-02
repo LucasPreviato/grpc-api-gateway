@@ -32,6 +32,8 @@
     "@nestjs/microservices": "^9.4.0",
     "@nestjs/platform-express": "^9.0.0",
     "grpc-proto": "git+https://github.com/LucasPreviato/grpc-qualilabs-proto.git",
+    "nestjs-pino": "^3.2.0",
+    "pino-http": "^8.3.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"
   },
