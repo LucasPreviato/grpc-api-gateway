@@ -9,7 +9,9 @@ describe('InitialQualificationsController', () => {
       controllers: [InitialQualificationsController],
     }).compile();
 
-    controller = module.get<InitialQualificationsController>(InitialQualificationsController);
+    controller = module.get<InitialQualificationsController>(
+      InitialQualificationsController,
+    );
   });
 
   it('should be defined', () => {

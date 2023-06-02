@@ -22,8 +22,8 @@ import { Observable } from 'rxjs';
 
 @Controller('providers')
 export class ProvidersController implements OnModuleInit {
+  private svc: ProviderServiceClient;
   constructor(
-    private svc: ProviderServiceClient,
     @Inject(PROVIDER_SERVICE_NAME)
     private readonly client: ClientGrpc,
   ) {}

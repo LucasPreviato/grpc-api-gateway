@@ -1,8 +1,9 @@
 import { Global, Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { AuthController } from './auth.controller';
 import { AUTH_PACKAGE_NAME, AUTH_SERVICE_NAME } from './auth.pb';
+import { AuthService } from './auth.service';
+
 @Global()
 @Module({
   imports: [

@@ -19,13 +19,14 @@ import { Observable } from 'rxjs';
 
 @Controller('initial-qualifications')
 export class InitialQualificationsController implements OnModuleInit {
+  private svc: InitialQualificationsClient;
   constructor(
-    private svc: InitialQualificationsClient,
     @Inject(INITIAL_QUALIFICATIONS_SERVICE_NAME)
     private readonly client: ClientGrpc,
   ) {}
 
   onModuleInit() {
+    console.log('InitialQualificationsController has been initialized.');
     this.svc = this.client.getService<InitialQualificationsClient>(
       INITIAL_QUALIFICATIONS_SERVICE_NAME,
     );

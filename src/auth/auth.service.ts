@@ -6,13 +6,15 @@ import {
   AuthServiceClient,
   ValidateResponse,
 } from './auth.pb';
+
 @Injectable()
 export class AuthService {
+  private svc: AuthServiceClient;
   constructor(
-    private svc: AuthServiceClient,
     @Inject(AUTH_SERVICE_NAME)
     private readonly client: ClientGrpc,
   ) {}
+
   public onModuleInit(): void {
     this.svc = this.client.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
   }
