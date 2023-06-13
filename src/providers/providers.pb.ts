@@ -6,25 +6,33 @@ export const protobufPackage = "providers";
 
 export interface ProviderCategory {
   id: string;
+  laboratoryId: number;
+  providerCategoryId: number;
   name: string;
+  critical: boolean;
   qualificationRequired: boolean;
   initialQualificationQuestions: InitialQualificationQuestions[];
+  errors: string[];
 }
 
 export interface Provider {
   id: string;
-  providerId: number;
+  laboratoryId: number;
+  providerCategoryId: number;
   name: string;
-  providerCategoryId: string;
+  critical: boolean;
+  isQualificated: boolean;
+  errors: string[];
 }
 
 export interface InitialQualificationQuestions {
   id: string;
-  providerCategoryId: string;
+  laboratoryId: number;
+  providerCategoryId: number;
   question: string;
+  errors: string[];
 }
 
-/** requests and responses Provider Category */
 export interface GetProviderCategoriesRequest {
 }
 
@@ -32,9 +40,20 @@ export interface GetProviderCategoriesResponse {
   providerCategories: ProviderCategory[];
 }
 
+export interface GetProviderCategoryRequest {
+  id: string;
+}
+
+export interface GetProviderCategoryResponse {
+  providerCategory: ProviderCategory | undefined;
+}
+
 export interface CreateProviderCategoryRequest {
+  laboratoryId: number;
   name: string;
+  critical: boolean;
   qualificationRequired: boolean;
+  initialQualificationQuestions: InitialQualificationQuestions[];
 }
 
 export interface CreateProviderCategoryResponse {
@@ -43,11 +62,22 @@ export interface CreateProviderCategoryResponse {
 
 export interface UpdateProviderCategoryRequest {
   id: string;
+  laboratoryId: number;
   name: string;
+  critical: boolean;
   qualificationRequired: boolean;
+  initialQualificationQuestions: InitialQualificationQuestions[];
 }
 
 export interface UpdateProviderCategoryResponse {
+  providerCategory: ProviderCategory | undefined;
+}
+
+export interface DeleteProviderCategoryRequest {
+  id: string;
+}
+
+export interface DeleteProviderCategoryResponse {
   providerCategory: ProviderCategory | undefined;
 }
 
@@ -56,6 +86,8 @@ export interface GetProvidersRequest {
 
 export interface GetProvidersResponse {
   providers: Provider[];
+  errors: string[];
+  status: number;
 }
 
 export interface GetProviderRequest {
@@ -64,41 +96,65 @@ export interface GetProviderRequest {
 
 export interface GetProviderResponse {
   provider: Provider | undefined;
+  errors: string[];
+  status: number;
 }
 
 export interface CreateProviderRequest {
+  laboratoryId: number;
+  providerCategoryId: number;
   name: string;
-  providerCategoryId: string;
+  critical: boolean;
 }
 
 export interface CreateProviderResponse {
-  status: number;
-  errors: string[];
   id: string;
+  errors: string[];
+  status: number;
 }
 
 export interface UpdateProviderRequest {
   id: string;
+  laboratoryId: number;
+  providerCategoryId: number;
   name: string;
-  providerCategoryId: string;
+  critical: boolean;
 }
 
 export interface UpdateProviderResponse {
-  status: number;
-  errors: string[];
   provider: Provider | undefined;
+  errors: string[];
+  status: number;
+}
+
+export interface DeleteProviderRequest {
+  id: string;
+}
+
+export interface DeleteProviderResponse {
+  provider: Provider | undefined;
+  errors: string[];
+  status: number;
 }
 
 export interface GetInitialQualificationQuestionsRequest {
-  providerCategoryId: string;
 }
 
 export interface GetInitialQualificationQuestionsResponse {
   initialQualificationQuestions: InitialQualificationQuestions[];
 }
 
+export interface GetInitialQualificationQuestionRequest {
+  id: string;
+}
+
+export interface GetInitialQualificationQuestionResponse {
+  initialQualificationQuestion: InitialQualificationQuestions | undefined;
+}
+
 export interface CreateInitialQualificationQuestionRequest {
-  providerCategoryId: string;
+  laboratoryId: number;
+  providerCategoryId: number;
   question: string;
 }
 
@@ -108,7 +164,8 @@ export interface CreateInitialQualificationQuestionResponse {
 
 export interface UpdateInitialQualificationQuestionRequest {
   id: string;
-  providerCategoryId: string;
+  laboratoryId: number;
+  providerCategoryId: number;
   question: string;
 }
 
@@ -116,21 +173,89 @@ export interface UpdateInitialQualificationQuestionResponse {
   initialQualificationQuestion: InitialQualificationQuestions | undefined;
 }
 
+export interface DeleteInitialQualificationQuestionRequest {
+  id: string;
+}
+
+export interface DeleteInitialQualificationQuestionResponse {
+  initialQualificationQuestion: InitialQualificationQuestions | undefined;
+}
+
 export const PROVIDERS_PACKAGE_NAME = "providers";
 
-export interface ProviderServiceClient {
-  createProvider(request: CreateProviderRequest): Observable<CreateProviderResponse>;
+export interface ProviderCategoryServiceClient {
+  getAll(request: GetProviderCategoriesRequest): Observable<GetProviderCategoriesResponse>;
 
+  findOne(request: GetProviderCategoryRequest): Observable<GetProviderCategoryResponse>;
+
+  create(request: CreateProviderCategoryRequest): Observable<CreateProviderCategoryResponse>;
+
+  update(request: UpdateProviderCategoryRequest): Observable<UpdateProviderCategoryResponse>;
+
+  delete(request: DeleteProviderCategoryRequest): Observable<DeleteProviderCategoryResponse>;
+}
+
+export interface ProviderCategoryServiceController {
+  getAll(
+    request: GetProviderCategoriesRequest,
+  ): Promise<GetProviderCategoriesResponse> | Observable<GetProviderCategoriesResponse> | GetProviderCategoriesResponse;
+
+  findOne(
+    request: GetProviderCategoryRequest,
+  ): Promise<GetProviderCategoryResponse> | Observable<GetProviderCategoryResponse> | GetProviderCategoryResponse;
+
+  create(
+    request: CreateProviderCategoryRequest,
+  ):
+    | Promise<CreateProviderCategoryResponse>
+    | Observable<CreateProviderCategoryResponse>
+    | CreateProviderCategoryResponse;
+
+  update(
+    request: UpdateProviderCategoryRequest,
+  ):
+    | Promise<UpdateProviderCategoryResponse>
+    | Observable<UpdateProviderCategoryResponse>
+    | UpdateProviderCategoryResponse;
+
+  delete(
+    request: DeleteProviderCategoryRequest,
+  ):
+    | Promise<DeleteProviderCategoryResponse>
+    | Observable<DeleteProviderCategoryResponse>
+    | DeleteProviderCategoryResponse;
+}
+
+export function ProviderCategoryServiceControllerMethods() {
+  return function (constructor: Function) {
+    const grpcMethods: string[] = ["getAll", "findOne", "create", "update", "delete"];
+    for (const method of grpcMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("ProviderCategoryService", method)(constructor.prototype[method], method, descriptor);
+    }
+    const grpcStreamMethods: string[] = [];
+    for (const method of grpcStreamMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("ProviderCategoryService", method)(constructor.prototype[method], method, descriptor);
+    }
+  };
+}
+
+export const PROVIDER_CATEGORY_SERVICE_NAME = "ProviderCategoryService";
+
+export interface ProviderServiceClient {
   findAll(request: GetProvidersRequest): Observable<GetProvidersResponse>;
 
   findOne(request: GetProviderRequest): Observable<GetProviderResponse>;
+
+  create(request: CreateProviderRequest): Observable<CreateProviderResponse>;
+
+  update(request: UpdateProviderRequest): Observable<UpdateProviderResponse>;
+
+  delete(request: DeleteProviderRequest): Observable<DeleteProviderResponse>;
 }
 
 export interface ProviderServiceController {
-  createProvider(
-    request: CreateProviderRequest,
-  ): Promise<CreateProviderResponse> | Observable<CreateProviderResponse> | CreateProviderResponse;
-
   findAll(
     request: GetProvidersRequest,
   ): Promise<GetProvidersResponse> | Observable<GetProvidersResponse> | GetProvidersResponse;
@@ -138,11 +263,23 @@ export interface ProviderServiceController {
   findOne(
     request: GetProviderRequest,
   ): Promise<GetProviderResponse> | Observable<GetProviderResponse> | GetProviderResponse;
+
+  create(
+    request: CreateProviderRequest,
+  ): Promise<CreateProviderResponse> | Observable<CreateProviderResponse> | CreateProviderResponse;
+
+  update(
+    request: UpdateProviderRequest,
+  ): Promise<UpdateProviderResponse> | Observable<UpdateProviderResponse> | UpdateProviderResponse;
+
+  delete(
+    request: DeleteProviderRequest,
+  ): Promise<DeleteProviderResponse> | Observable<DeleteProviderResponse> | DeleteProviderResponse;
 }
 
 export function ProviderServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createProvider", "findAll", "findOne"];
+    const grpcMethods: string[] = ["findAll", "findOne", "create", "update", "delete"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("ProviderService", method)(constructor.prototype[method], method, descriptor);
@@ -157,47 +294,72 @@ export function ProviderServiceControllerMethods() {
 
 export const PROVIDER_SERVICE_NAME = "ProviderService";
 
-export interface ProviderCategoryServiceClient {
-  getProviderCategories(request: GetProviderCategoriesRequest): Observable<GetProviderCategoriesResponse>;
+export interface InitialQualificationQuestionsServiceClient {
+  getAll(request: GetInitialQualificationQuestionsRequest): Observable<GetInitialQualificationQuestionsResponse>;
 
-  createProviderCategory(request: CreateProviderCategoryRequest): Observable<CreateProviderCategoryResponse>;
+  findOne(request: GetInitialQualificationQuestionRequest): Observable<GetInitialQualificationQuestionResponse>;
 
-  updateProviderCategory(request: UpdateProviderCategoryRequest): Observable<UpdateProviderCategoryResponse>;
+  create(request: CreateInitialQualificationQuestionRequest): Observable<CreateInitialQualificationQuestionResponse>;
+
+  update(request: UpdateInitialQualificationQuestionRequest): Observable<UpdateInitialQualificationQuestionResponse>;
+
+  delete(request: DeleteInitialQualificationQuestionRequest): Observable<DeleteInitialQualificationQuestionResponse>;
 }
 
-export interface ProviderCategoryServiceController {
-  getProviderCategories(
-    request: GetProviderCategoriesRequest,
-  ): Promise<GetProviderCategoriesResponse> | Observable<GetProviderCategoriesResponse> | GetProviderCategoriesResponse;
-
-  createProviderCategory(
-    request: CreateProviderCategoryRequest,
+export interface InitialQualificationQuestionsServiceController {
+  getAll(
+    request: GetInitialQualificationQuestionsRequest,
   ):
-    | Promise<CreateProviderCategoryResponse>
-    | Observable<CreateProviderCategoryResponse>
-    | CreateProviderCategoryResponse;
+    | Promise<GetInitialQualificationQuestionsResponse>
+    | Observable<GetInitialQualificationQuestionsResponse>
+    | GetInitialQualificationQuestionsResponse;
 
-  updateProviderCategory(
-    request: UpdateProviderCategoryRequest,
+  findOne(
+    request: GetInitialQualificationQuestionRequest,
   ):
-    | Promise<UpdateProviderCategoryResponse>
-    | Observable<UpdateProviderCategoryResponse>
-    | UpdateProviderCategoryResponse;
+    | Promise<GetInitialQualificationQuestionResponse>
+    | Observable<GetInitialQualificationQuestionResponse>
+    | GetInitialQualificationQuestionResponse;
+
+  create(
+    request: CreateInitialQualificationQuestionRequest,
+  ):
+    | Promise<CreateInitialQualificationQuestionResponse>
+    | Observable<CreateInitialQualificationQuestionResponse>
+    | CreateInitialQualificationQuestionResponse;
+
+  update(
+    request: UpdateInitialQualificationQuestionRequest,
+  ):
+    | Promise<UpdateInitialQualificationQuestionResponse>
+    | Observable<UpdateInitialQualificationQuestionResponse>
+    | UpdateInitialQualificationQuestionResponse;
+
+  delete(
+    request: DeleteInitialQualificationQuestionRequest,
+  ):
+    | Promise<DeleteInitialQualificationQuestionResponse>
+    | Observable<DeleteInitialQualificationQuestionResponse>
+    | DeleteInitialQualificationQuestionResponse;
 }
 
-export function ProviderCategoryServiceControllerMethods() {
+export function InitialQualificationQuestionsServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getProviderCategories", "createProviderCategory", "updateProviderCategory"];
+    const grpcMethods: string[] = ["getAll", "findOne", "create", "update", "delete"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("ProviderCategoryService", method)(constructor.prototype[method], method, descriptor);
+      GrpcMethod("InitialQualificationQuestionsService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("ProviderCategoryService", method)(constructor.prototype[method], method, descriptor);
+      GrpcStreamMethod("InitialQualificationQuestionsService", method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const PROVIDER_CATEGORY_SERVICE_NAME = "ProviderCategoryService";
+export const INITIAL_QUALIFICATION_QUESTIONS_SERVICE_NAME = "InitialQualificationQuestionsService";

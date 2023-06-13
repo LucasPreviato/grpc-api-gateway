@@ -22,7 +22,8 @@
     "proto:auth": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/grpc-proto/proto --ts_proto_out=src/auth/ node_modules/grpc-proto/proto/auth.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
     "proto:providers": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/grpc-proto/proto --ts_proto_out=src/providers/ node_modules/grpc-proto/proto/providers.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
     "proto:initial-qualification": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/grpc-proto/proto --ts_proto_out=src/initial-qualifications/ node_modules/grpc-proto/proto/initial-qualifications.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
-    "proto:all": "yarn run proto:auth && yarn run proto:providers && yarn run proto:initial-qualification"
+    "proto:equipaments": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./node_modules/grpc-proto/proto --ts_proto_out=src/equipaments/ node_modules/grpc-proto/proto/equipaments.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+    "proto:all": "yarn run proto:auth && yarn run proto:providers && yarn run proto:initial-qualification && yarn run proto:equipaments"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.8.14",
@@ -32,6 +33,9 @@
     "@nestjs/microservices": "^9.4.0",
     "@nestjs/platform-express": "^9.0.0",
     "grpc-proto": "git+https://github.com/LucasPreviato/grpc-qualilabs-proto.git",
+    "nestjs-pino": "^3.2.0",
+    "pino-http": "^8.3.3",
+    "pino-pretty": "^10.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"
   },

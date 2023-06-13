@@ -16,11 +16,14 @@ import {
   LoginResponse,
 } from './auth.pb';
 import { Observable } from 'rxjs';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 
 @Controller('auth')
 export class AuthController implements OnModuleInit {
   private svc: AuthServiceClient;
   constructor(
+    @InjectPinoLogger(AuthController.name) private readonly logger: PinoLogger,
+
     @Inject(AUTH_SERVICE_NAME)
     private readonly client: ClientGrpc,
   ) {}
@@ -33,8 +36,8 @@ export class AuthController implements OnModuleInit {
   private async register(
     @Body() body: RegisterRequest,
   ): Promise<Observable<RegisterResponse>> {
-    console.log('api gateway ');
-    return this.svc.register(body);
+    const response = this.svc.register(body);
+    return response;
   }
   @Put('login')
   private async login(
