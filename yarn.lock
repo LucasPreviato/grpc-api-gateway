@@ -2748,7 +2748,7 @@ grapheme-splitter@^1.0.4:
 
 "grpc-proto@git+https://github.com/LucasPreviato/grpc-qualilabs-proto.git":
   version "1.0.0"
-  resolved "git+https://github.com/LucasPreviato/grpc-qualilabs-proto.git#3361a3a0599251836f5ad44616ac4067d4eaca7f"
+  resolved "git+https://github.com/LucasPreviato/grpc-qualilabs-proto.git#f0a0696a95a3cf3ba7318b41cd860bbf085bb408"
 
 has-flag@^3.0.0:
   version "3.0.0"
